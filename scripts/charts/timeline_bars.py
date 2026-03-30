@@ -38,7 +38,6 @@ def create_timeline_bars(data, title=None, theme_path=None, output_path=None):
         x=years,
         y=values,
         marker_color=bar_colors,
-        width=0.65,
         text=[str(v) for v in values],
         textposition="outside",
         textfont={"size": 16, "color": colors["text"], "family": "Inter Bold"},
@@ -50,10 +49,11 @@ def create_timeline_bars(data, title=None, theme_path=None, output_path=None):
         v = p["value"]
         label = p["label"]
 
+        # Use index for x position (category axis maps strings to 0-based indices)
         # Place label inside bar if tall enough, otherwise below x-axis
         if v >= label_threshold:
             annotations_list.append({
-                "x": p["year"], "y": v / 2,
+                "x": i, "y": v / 2,
                 "text": f"<b>{label}</b>",
                 "showarrow": False,
                 "font": {"size": 14, "color": "#ffffff"},
@@ -61,7 +61,7 @@ def create_timeline_bars(data, title=None, theme_path=None, output_path=None):
             })
         else:
             annotations_list.append({
-                "x": p["year"], "y": -max_val * 0.06,
+                "x": i, "y": -max_val * 0.06,
                 "text": f"<b>{label}</b>",
                 "showarrow": False,
                 "font": {"size": 13, "color": colors["text"]},
@@ -71,7 +71,7 @@ def create_timeline_bars(data, title=None, theme_path=None, output_path=None):
         # Event annotations above bars (with offset from value label)
         if p.get("annotation"):
             annotations_list.append({
-                "x": p["year"], "y": v + max_val * 0.14,
+                "x": i, "y": v + max_val * 0.14,
                 "text": p["annotation"],
                 "showarrow": True,
                 "arrowhead": 0,
@@ -93,6 +93,7 @@ def create_timeline_bars(data, title=None, theme_path=None, output_path=None):
     layout["xaxis"] = {
         "title": "",
         "tickfont": {"size": 14},
+        "type": "category",
         "categoryorder": "array",
         "categoryarray": years,
     }
