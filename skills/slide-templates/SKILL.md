@@ -12,7 +12,7 @@ description: "9 consulting slide templates with Plotly drafts and Nano Banana st
 | # | Template | Script | When to Use |
 |---|----------|--------|-------------|
 | 1 | Stacked Bar | `stacked_bar.py` | Compare composition across objects |
-| 2 | Timeline Bars | `timeline_bars.py` | Show metric evolution over time |
+| 2 | Mekko Chart | `timeline_bars.py` | Two dimensions per bar (width + height) |
 | 3 | Ranked Bars | `waterfall.py` | Rank/benchmark against alternatives |
 | 4 | Driver Tree | `driver_tree.py` | Decompose a KPI into components |
 | 5 | Spider/Radar | `spider_radar.py` | Compare profiles across dimensions |
@@ -111,14 +111,14 @@ ACCENTS:
 - Total value labels above each bar
 ```
 
-### Timeline Bars
+### Mekko Chart
 ```
 ACCENTS:
-- Event annotations above/below bars with readable text (14px+)
-- Color code bars by type (growth=green, setback=red, neutral=gray)
-- Trend arrow showing overall direction
-- Callout box highlighting the inflection point or key event
-- Value labels on top of each bar
+- Bar WIDTH encodes one dimension, HEIGHT encodes another — label both axes clearly
+- Label each bar with its name (large, bold) and both dimension values
+- Color code bars by category or performance
+- Callout on the most interesting bar explaining why it stands out
+- Annotations showing the width-dimension value (e.g., "$25B market")
 ```
 
 ### Waterfall / Ranked Bars

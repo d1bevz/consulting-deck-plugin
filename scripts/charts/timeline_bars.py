@@ -1,13 +1,17 @@
-"""Timeline Bars — Historical Evolution.
+"""Mekko Chart — Variable-Width Bar Chart (two dimensions per bar).
 
-Shows how a metric changed over time with events of varying duration and intensity.
-Inspired by BCG "Romance" slide: X = continuous time axis, Y = intensity,
-bar WIDTH = duration of event, bar POSITION = when it occurred.
+Each bar encodes TWO numeric values:
+- WIDTH = one dimension (market size, revenue, duration, segment share)
+- HEIGHT = another dimension (growth rate, margin, intensity, score)
 
-This is NOT a categorical bar chart — it's a timeline with rectangles.
+Inspired by BCG "Romance" slide. Also known as Marimekko chart,
+width-encoded bar chart, or variable-width column chart.
 
-Examples: company growth by funding rounds, product evolution, market entry,
-relationship/project history with varying durations.
+Examples:
+- Market segments: width=market size, height=growth rate
+- Client portfolio: width=revenue, height=margin
+- Project timeline: width=duration, height=complexity
+- Product lines: width=units sold, height=avg price
 """
 
 import plotly.graph_objects as go
@@ -16,25 +20,25 @@ from scripts.utils import load_theme, get_plotly_layout, save_chart, parse_cli_a
 
 DEMO_DATA = {
     "periods": [
-        {"start": 2018.0, "end": 2019.0, "label": "Idea", "value": 15, "color": "muted", "annotation": "Side project"},
-        {"start": 2019.0, "end": 2019.8, "label": "MVP", "value": 30, "color": "muted", "annotation": ""},
-        {"start": 2020.0, "end": 2021.5, "label": "Pre-seed", "value": 45, "color": "secondary", "annotation": "$500K"},
-        {"start": 2021.5, "end": 2022.0, "label": "Pivot", "value": 20, "color": "danger", "annotation": "Market shift"},
-        {"start": 2022.2, "end": 2022.5, "label": "", "value": 10, "color": "muted", "annotation": ""},
-        {"start": 2022.5, "end": 2023.0, "label": "", "value": 15, "color": "muted", "annotation": "Recovery"},
-        {"start": 2023.0, "end": 2024.0, "label": "Seed", "value": 60, "color": "secondary", "annotation": "$2M"},
-        {"start": 2024.0, "end": 2025.2, "label": "PMF", "value": 80, "color": "success", "annotation": "Product-market fit"},
-        {"start": 2025.2, "end": 2026.5, "label": "Series A", "value": 95, "color": "accent", "annotation": "$12M — Scaling"},
+        {"start": 0, "end": 25, "label": "Enterprise", "value": 12, "color": "primary", "annotation": "$25B market"},
+        {"start": 25, "end": 43, "label": "Mid-Market", "value": 28, "color": "accent", "annotation": "$18B market"},
+        {"start": 43, "end": 55, "label": "SMB", "value": 35, "color": "success", "annotation": "$12B market"},
+        {"start": 55, "end": 70, "label": "Prosumer", "value": 22, "color": "secondary", "annotation": "$15B market"},
+        {"start": 70, "end": 85, "label": "Consumer", "value": 8, "color": "muted", "annotation": "$15B market"},
+        {"start": 85, "end": 100, "label": "Free Tier", "value": 3, "color": "muted", "annotation": "$15B market"},
     ],
-    "title": "Growth accelerated after pivot, with Series A marking inflection point",
-    "source": "Company records; internal analysis",
-    "x_label": "Time",
-    "y_label": "Intensity",
+    "title": "Mid-market and SMB segments show highest growth despite smaller market size",
+    "source": "Market analysis; Gartner 2026",
+    "x_label": "Market Share (%)",
+    "y_label": "Growth Rate (%)",
 }
 
+# Backward compatibility alias
+create_timeline_bars_compat = None  # set after function def
 
-def create_timeline_bars(data, title=None, theme_path=None, output_path=None):
-    """Create a timeline chart with rectangles of varying width on a time axis."""
+
+def create_mekko(data, title=None, theme_path=None, output_path=None):
+    """Create a Mekko chart — variable-width bars encoding two dimensions."""
     theme = load_theme(theme_path)
     colors = theme["colors"]
     periods = data["periods"]
@@ -149,9 +153,13 @@ def create_timeline_bars(data, title=None, theme_path=None, output_path=None):
     return fig
 
 
+# Backward compatibility
+create_timeline_bars = create_mekko
+
+
 if __name__ == "__main__":
     data, output, theme_path = parse_cli_args()
     if not data:
         data = DEMO_DATA
-    create_timeline_bars(data, output_path=output, theme_path=theme_path)
+    create_mekko(data, output_path=output, theme_path=theme_path)
     print(f"Saved to {output}")

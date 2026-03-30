@@ -6,7 +6,7 @@
 |------|----------------|----------|
 | Compare composition/parts of whole | Stacked Bar | `stacked_bar` |
 | Compare same parameter across objects | Ranked Bars | `waterfall` |
-| Show change over time | Timeline Bars | `timeline_bars` |
+| Show two dimensions per bar (width + height) | Mekko Chart | `timeline_bars` |
 | Decompose a metric into drivers | Driver Tree | `driver_tree` |
 | Compare profiles across dimensions | Spider / Radar | `spider_radar` |
 | Qualitative multi-criteria scoring | Harvey Ball Matrix | `harvey_balls` |
@@ -22,11 +22,11 @@
 - Revenue mix by product/segment
 - Market share composition
 
-### Timeline Bars
-- Company growth by funding rounds
-- Product version evolution
-- Market entry history
-- Project milestone timeline
+### Mekko Chart
+- Market segments: width=market size, height=growth rate
+- Client portfolio: width=revenue, height=margin
+- Product lines: width=units sold, height=avg price
+- Project timeline: width=duration, height=complexity
 
 ### Ranked Bars
 - NPS or CSAT benchmarking
