@@ -123,7 +123,7 @@ def create_driver_tree(data, title=None, theme_path=None, output_path=None):
         is_root = nid == root_id
         is_leaf = nid in leaf_ids
         marker_size = 56 if is_root else 36
-        text_size = 22 if is_root else (17 if is_leaf else 19)
+        text_size = 26 if is_root else (20 if is_leaf else 22)
 
         # Leaf nodes: marker + text below via mode="markers+text"
         if is_leaf:

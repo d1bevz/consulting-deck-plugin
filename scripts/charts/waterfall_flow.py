@@ -1,6 +1,7 @@
 """Waterfall Flow — Cumulative Contribution Analysis.
 Shows how individual positive/negative factors contribute to a final result.
-Examples: revenue bridge, cost breakdown, P&L waterfall, budget variance.
+Examples: revenue bridge, cost breakdown, P&L waterfall, budget variance,
+factor influence analysis, before/after decomposition.
 """
 import plotly.graph_objects as go
 from scripts.utils import load_theme, get_plotly_layout, save_chart, parse_cli_args
