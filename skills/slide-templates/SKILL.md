@@ -1,6 +1,6 @@
 ---
 name: slide-templates
-description: "9 consulting slide templates with Plotly drafts and Nano Banana styling. Use when: user asks for a specific chart type (spider chart, stacked bar, 2x2 matrix, driver tree, waterfall, harvey balls, bubble chart, stakeholder quotes, agenda), wants to create a single consulting-style slide, or says 'slide template', 'chart', 'make a slide', 'consulting slide'."
+description: "9 consulting slide templates with Plotly drafts and Nano Banana styling. Use when: user asks for a specific chart type (spider chart, stacked bar, 2x2 matrix, driver tree, ranked bars, harvey balls, bubble chart, stakeholder quotes, agenda), wants to create a single consulting-style slide, or says 'slide template', 'chart', 'make a slide', 'consulting slide'."
 ---
 
 # Slide Templates
@@ -13,7 +13,7 @@ description: "9 consulting slide templates with Plotly drafts and Nano Banana st
 |---|----------|--------|-------------|
 | 1 | Stacked Bar | `stacked_bar.py` | Compare composition across objects |
 | 2 | Timeline Bars | `timeline_bars.py` | Show metric evolution over time |
-| 3 | Waterfall | `waterfall.py` | Rank/benchmark against alternatives |
+| 3 | Ranked Bars | `waterfall.py` | Rank/benchmark against alternatives |
 | 4 | Driver Tree | `driver_tree.py` | Decompose a KPI into components |
 | 5 | Spider/Radar | `spider_radar.py` | Compare profiles across dimensions |
 | 6 | Harvey Balls | `harvey_balls.py` | Qualitative multi-criteria scoring |
@@ -192,9 +192,12 @@ ACCENTS:
 ### Agenda
 ```
 ACCENTS:
-- Section numbers in large bold type
-- Section titles prominent, subsections in muted smaller text
+- Section numbers in VERY large bold type (36px+)
+- Section titles prominent and bold (26px+)
+- Subsections readable (16px+), muted color
+- Generous spacing between sections
 - Thin separators between sections
+- Accent bar/stripe on the left side of each section
 - Optionally highlight current section in accent color
 ```
 

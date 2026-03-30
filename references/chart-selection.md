@@ -5,7 +5,7 @@
 | Task | Best Chart Type | Template |
 |------|----------------|----------|
 | Compare composition/parts of whole | Stacked Bar | `stacked_bar` |
-| Compare same parameter across objects | Waterfall / Ranked Bars | `waterfall` |
+| Compare same parameter across objects | Ranked Bars | `waterfall` |
 | Show change over time | Timeline Bars | `timeline_bars` |
 | Decompose a metric into drivers | Driver Tree | `driver_tree` |
 | Compare profiles across dimensions | Spider / Radar | `spider_radar` |
@@ -28,7 +28,7 @@
 - Market entry history
 - Project milestone timeline
 
-### Waterfall / Ranked Bars
+### Ranked Bars
 - NPS or CSAT benchmarking
 - Feature comparison vs competitors
 - Ranking of options by score
