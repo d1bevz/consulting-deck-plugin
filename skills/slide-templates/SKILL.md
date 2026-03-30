@@ -81,6 +81,20 @@ DATA ACCURACY:
 - Preserve ALL data points from the reference chart exactly
 - Do not invent or approximate numbers
 
+CALLOUT ANNOTATIONS:
+- Add callout boxes or arrows pointing to key data changes or insights
+- Use accent color for callout borders/arrows
+- Callout text should be brief (5-10 words max)
+- Examples: "3x growth YoY", "Biggest gap", "Key driver", "Below target"
+- Position callouts so they don't obscure data
+- Use sparingly — 1-3 per slide maximum
+
+TEXT READABILITY:
+- All text must be readable when projected from 5 meters
+- Minimum font size equivalent: 14px for body, 18px for data labels, 24px for titles
+- Use bold for key numbers and insights
+- High contrast between text and background
+
 TITLE: "[insert approved headline]"
 SOURCE: "[insert data source]"
 ```
@@ -91,33 +105,42 @@ SOURCE: "[insert data source]"
 ```
 ACCENTS:
 - Thin connecting lines between corresponding segments across bars
-- Percentage labels inside each segment (white text)
+- Percentage labels inside each segment (white text, bold)
 - Highlight the dominant segment with slightly bolder color
+- Callout arrow pointing to the most interesting difference between bars
+- Total value labels above each bar
 ```
 
 ### Timeline Bars
 ```
 ACCENTS:
-- Event annotations above/below bars with small text
+- Event annotations above/below bars with readable text (14px+)
 - Color code bars by type (growth=green, setback=red, neutral=gray)
-- Optional trend arrow showing overall direction
+- Trend arrow showing overall direction
+- Callout box highlighting the inflection point or key event
+- Value labels on top of each bar
 ```
 
 ### Waterfall / Ranked Bars
 ```
 ACCENTS:
 - Highlighted bar(s) in accent color, rest in muted gray
-- Value labels on top of each bar
+- Value labels on top of each bar (bold, 16px+)
+- Rank numbers (#1, #2...) next to bar labels
 - Descending sort, clean spacing
+- Horizontal average/benchmark line with label
+- Callout showing delta from leader for highlighted item
 ```
 
 ### Driver Tree
 ```
 ACCENTS:
 - Nodes colored by status: green=met, red=unmet, yellow=partial
-- Clear hierarchical layout, left-to-right or top-to-bottom
-- Thin connecting lines between parent and children
-- Root node larger and bolder
+- Clear top-to-bottom hierarchical layout with generous level spacing
+- Thick connecting lines between parent and children (2px+)
+- Root node significantly larger and bolder
+- Status labels next to each node (Met/Unmet/Partial)
+- Callout annotation on the critical unmet node explaining the gap
 ```
 
 ### Spider / Radar
@@ -125,26 +148,32 @@ ACCENTS:
 ACCENTS:
 - Semi-transparent fill under each profile line
 - Circle or highlight the 2 biggest gaps between profiles
-- Annotate gap areas with brief text
+- Annotate gap areas with callout text explaining the gap (e.g., "Integration: -25pts")
 - Legend positioned cleanly (top-right or bottom-center)
+- Axis labels large and readable (14px+)
+- Value labels at each data point
 ```
 
 ### Harvey Ball Matrix
 ```
 ACCENTS:
-- Clean grid layout with even spacing
-- Circles with proportional fill (0%=empty, 25%, 50%, 75%, 100%=full)
-- Row headers bold, column headers at top
-- Optionally highlight the "winner" row
+- Clean grid layout with generous spacing
+- Large circles (40px+) with proportional fill (0%=empty, 25%, 50%, 75%, 100%=full)
+- Row headers bold and large (16px+), column headers at top (14px+)
+- Highlight the "winner" row with subtle background
+- Add a fill legend at bottom
+- Alternating row backgrounds for readability
 ```
 
 ### Bubble / 2x2 Matrix
 ```
 ACCENTS:
 - Dashed lines dividing quadrants
-- Quadrant labels in corners (e.g., "Stars", "Cash Cows")
-- Key bubble larger and in accent color
-- Size legend if bubble sizes differ significantly
+- Quadrant labels LARGE and BOLD in corners (18px+, e.g., "Stars", "Cash Cows")
+- Key bubble larger and in accent color with bold label
+- Size legend explaining what bubble size represents
+- Item labels large (16px+) with (x, y) value annotations
+- Callout on the key item explaining why it's positioned there
 - "Top box" zone optionally highlighted with subtle background
 ```
 
@@ -152,9 +181,11 @@ ACCENTS:
 ```
 ACCENTS:
 - Two-column layout: positive (left) vs concerns (right)
-- Styled quotation marks
-- Attribution in smaller muted text below each quote
-- Summary box at bottom with key takeaway
+- Large styled quotation marks (« » or oversized " ")
+- Quote text large and readable (18px+)
+- Attribution in muted text (14px+) below each quote
+- Numbered bullets for each quote
+- Summary box at bottom with key takeaway, prominent (16px+ bold)
 - Vertical divider between columns
 ```
 

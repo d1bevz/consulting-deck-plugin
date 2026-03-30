@@ -28,27 +28,77 @@ def create_timeline_bars(data, title=None, theme_path=None, output_path=None):
     values = [p["value"] for p in periods]
     labels = [p["label"] for p in periods]
     bar_colors = [colors.get(p.get("color", "primary"), p.get("color", colors["primary"])) for p in periods]
+    max_val = max(values)
+
+    # Determine label placement: inside bar if bar is tall enough, otherwise below x-axis
+    label_threshold = max_val * 0.15  # bars shorter than 15% of max get label below
 
     fig = go.Figure()
     fig.add_trace(go.Bar(
-        x=years, y=values, marker_color=bar_colors,
-        text=labels, textposition="outside",
-        textfont={"size": 13, "color": colors["text"]},
+        x=years,
+        y=values,
+        marker_color=bar_colors,
+        width=0.65,
+        text=[str(v) for v in values],
+        textposition="outside",
+        textfont={"size": 16, "color": colors["text"], "family": "Inter Bold"},
     ))
 
     annotations_list = []
-    for p in periods:
+
+    for i, p in enumerate(periods):
+        v = p["value"]
+        label = p["label"]
+
+        # Place label inside bar if tall enough, otherwise below x-axis
+        if v >= label_threshold:
+            annotations_list.append({
+                "x": p["year"], "y": v / 2,
+                "text": f"<b>{label}</b>",
+                "showarrow": False,
+                "font": {"size": 14, "color": "#ffffff"},
+                "xanchor": "center", "yanchor": "middle",
+            })
+        else:
+            annotations_list.append({
+                "x": p["year"], "y": -max_val * 0.06,
+                "text": f"<b>{label}</b>",
+                "showarrow": False,
+                "font": {"size": 13, "color": colors["text"]},
+                "xanchor": "center", "yanchor": "top",
+            })
+
+        # Event annotations above bars (with offset from value label)
         if p.get("annotation"):
             annotations_list.append({
-                "x": p["year"], "y": p["value"] + 8,
-                "text": p["annotation"], "showarrow": False,
-                "font": {"size": 11, "color": colors["muted"]},
+                "x": p["year"], "y": v + max_val * 0.14,
+                "text": p["annotation"],
+                "showarrow": True,
+                "arrowhead": 0,
+                "arrowwidth": 1,
+                "arrowcolor": colors["muted"],
+                "ax": 0, "ay": -20,
+                "font": {"size": 12, "color": colors["muted"]},
+                "xanchor": "center",
             })
 
     layout = get_plotly_layout(theme, title=title or data.get("title", ""), source=data.get("source", ""))
-    layout["yaxis"] = {"title": "Intensity", "showgrid": True, "gridcolor": "#f0f0f0", "range": [0, max(values) * 1.3]}
-    layout["xaxis"] = {"title": ""}
+    layout["yaxis"] = {
+        "title": {"text": "Intensity", "font": {"size": 14}},
+        "showgrid": True,
+        "gridcolor": "#f0f0f0",
+        "range": [-(max_val * 0.1), max_val * 1.45],
+        "tickfont": {"size": 13},
+    }
+    layout["xaxis"] = {
+        "title": "",
+        "tickfont": {"size": 14},
+        "categoryorder": "array",
+        "categoryarray": years,
+    }
     layout["showlegend"] = False
+    layout["bargap"] = 0.3
+    layout["margin"] = {"l": 80, "r": 60, "t": 120, "b": 100}
     layout["annotations"] = layout.get("annotations", []) + annotations_list
     fig.update_layout(**layout)
 

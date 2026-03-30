@@ -3,7 +3,6 @@ Decomposes a complex metric into components with status assessment.
 Examples: revenue drivers, root cause analysis, product-market fit.
 """
 import plotly.graph_objects as go
-import networkx as nx
 from scripts.utils import load_theme, get_plotly_layout, save_chart, parse_cli_args
 
 DEMO_DATA = {
@@ -32,6 +31,8 @@ DEMO_DATA = {
 }
 
 STATUS_COLORS = {"met": "success", "unmet": "danger", "partial": "warning"}
+STATUS_LABELS = {"met": "\u2713 Met", "unmet": "\u2717 Unmet", "partial": "~ Partial"}
+
 
 def _flatten_tree(tree, parent=None, edges=None, nodes=None):
     if edges is None: edges = []
@@ -44,54 +45,97 @@ def _flatten_tree(tree, parent=None, edges=None, nodes=None):
         _flatten_tree(child, parent=node_id, edges=edges, nodes=nodes)
     return nodes, edges
 
+
+def _compute_positions(tree, x_start=0, x_end=1, y=0, y_step=1.0, positions=None):
+    """Recursive positioning: each node centered above its children's span."""
+    if positions is None:
+        positions = {}
+    node_id = tree["node"]
+    children = tree.get("children", [])
+
+    if not children:
+        x_center = (x_start + x_end) / 2
+        positions[node_id] = (x_center, -y)
+        return positions
+
+    # Divide horizontal space equally among children
+    child_width = (x_end - x_start) / len(children)
+    for idx, child in enumerate(children):
+        cx_start = x_start + idx * child_width
+        cx_end = cx_start + child_width
+        _compute_positions(child, cx_start, cx_end, y + y_step, y_step, positions)
+
+    # Center parent above its children
+    child_xs = [positions[c["node"]][0] for c in children]
+    x_center = (min(child_xs) + max(child_xs)) / 2
+    positions[node_id] = (x_center, -y)
+    return positions
+
+
 def create_driver_tree(data, title=None, theme_path=None, output_path=None):
     theme = load_theme(theme_path)
     colors = theme["colors"]
     nodes_list, edges = _flatten_tree(data["tree"])
     node_statuses = {n["id"]: n["status"] for n in nodes_list}
 
-    G = nx.DiGraph()
-    G.add_edges_from(edges)
-
-    def assign_depth(tree, depth=0, depths=None):
-        if depths is None: depths = {}
-        depths[tree["node"]] = depth
-        for child in tree.get("children", []):
-            assign_depth(child, depth + 1, depths)
-        return depths
-
-    depths = assign_depth(data["tree"])
-    for node_id, depth in depths.items():
-        G.nodes[node_id]["subset"] = depth
-
-    pos = nx.multipartite_layout(G, subset_key="subset", align="horizontal")
-    max_y = max(p[1] for p in pos.values())
-    pos = {k: (v[0], max_y - v[1]) for k, v in pos.items()}
+    # Compute positions with recursive algorithm for clean top-to-bottom layout
+    pos = _compute_positions(data["tree"], x_start=0, x_end=10, y=0, y_step=1.5)
 
     fig = go.Figure()
 
+    # Draw connecting lines (thicker, with slight curve via intermediate points)
     for u, v in edges:
         x0, y0 = pos[u]
         x1, y1 = pos[v]
+        # Stepped path: go down halfway, then across, then down
+        mid_y = (y0 + y1) / 2
         fig.add_trace(go.Scatter(
-            x=[x0, x1], y=[y0, y1], mode="lines",
-            line={"width": 1.5, "color": colors["muted"]},
+            x=[x0, x0, x1, x1], y=[y0, mid_y, mid_y, y1],
+            mode="lines",
+            line={"width": 2.5, "color": colors["muted"], "shape": "spline"},
             showlegend=False, hoverinfo="skip",
         ))
 
+    # Determine root node for special styling
+    root_id = data["tree"]["node"]
+
+    # Draw nodes with status labels
     for node_info in nodes_list:
         nid = node_info["id"]
         status = node_info["status"]
         x, y = pos[nid]
         color_key = STATUS_COLORS.get(status, "muted")
         node_color = colors.get(color_key, color_key)
+        status_label = STATUS_LABELS.get(status, "")
+
+        is_root = nid == root_id
+        marker_size = 48 if is_root else 30
+        text_size = 16 if is_root else 14
+        font_weight = "bold" if is_root else "normal"
+
+        # Node marker
         fig.add_trace(go.Scatter(
-            x=[x], y=[y], mode="markers+text",
-            marker={"size": 30, "color": node_color, "line": {"width": 2, "color": "white"}},
-            text=[nid], textposition="bottom center",
-            textfont={"size": 11, "color": colors["text"]},
-            showlegend=False, hovertext=f"{nid}: {status}",
+            x=[x], y=[y], mode="markers",
+            marker={
+                "size": marker_size,
+                "color": node_color,
+                "line": {"width": 3 if is_root else 2, "color": "white"},
+            },
+            showlegend=False,
+            hovertext=f"<b>{nid}</b><br>Status: {status_label}",
+            hoverinfo="text",
         ))
+
+        # Node label — positioned to the right of the node
+        label_text = f"<b>{nid}</b>" if is_root else nid
+        fig.add_annotation(
+            x=x, y=y,
+            text=f"{label_text}  <span style='color:{node_color}'>{status_label}</span>",
+            showarrow=False,
+            xanchor="left",
+            xshift=marker_size // 2 + 8,
+            font={"size": text_size, "color": colors["text"]},
+        )
 
     layout = get_plotly_layout(theme, title=title or data.get("title", ""), source=data.get("source", ""))
     layout["xaxis"] = {"visible": False}

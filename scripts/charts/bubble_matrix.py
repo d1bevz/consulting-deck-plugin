@@ -32,13 +32,14 @@ def create_bubble_matrix(data, title=None, theme_path=None, output_path=None):
         color_key = item.get("color", "secondary")
         bubble_color = colors.get(color_key, color_key)
         is_highlight = item.get("highlight", False)
+        label = f"<b>{item['name']}</b>" if is_highlight else item["name"]
         fig.add_trace(go.Scatter(
             x=[item["x"]], y=[item["y"]], mode="markers+text",
             marker={"size": item["size"], "color": bubble_color,
                     "opacity": 0.85 if is_highlight else 0.5,
                     "line": {"width": 2, "color": "white"}},
-            text=[item["name"]], textposition="top center",
-            textfont={"size": 12, "color": colors["text"]},
+            text=[label], textposition="top center",
+            textfont={"size": 16, "color": colors["text"]},
             showlegend=False,
         ))
 
@@ -60,13 +61,35 @@ def create_bubble_matrix(data, title=None, theme_path=None, output_path=None):
     for key, label in quad_labels.items():
         if key in positions:
             px, py, xa, ya = positions[key]
-            quad_annotations.append({"x": px, "y": py, "text": label, "xanchor": xa, "yanchor": ya,
-                                     "font": {"size": 14, "color": colors["muted"]}, "showarrow": False})
+            quad_annotations.append({"x": px, "y": py, "text": f"<b>{label}</b>", "xanchor": xa, "yanchor": ya,
+                                     "font": {"size": 18, "color": colors["muted"]}, "showarrow": False})
+
+    # Value annotations near each bubble showing (x, y)
+    value_annotations = []
+    for item in items:
+        value_annotations.append({
+            "x": item["x"], "y": item["y"], "text": f"({item['x']}, {item['y']})",
+            "font": {"size": 14, "color": colors["muted"]}, "showarrow": False,
+            "yshift": -int(item["size"] * 0.6) - 10, "xanchor": "center",
+        })
 
     layout = get_plotly_layout(theme, title=title or data.get("title", ""), source=data.get("source", ""))
-    layout["xaxis"] = {"title": data["x_axis"], "showgrid": True, "gridcolor": "#f0f0f0", "range": x_range}
-    layout["yaxis"] = {"title": data["y_axis"], "showgrid": True, "gridcolor": "#f0f0f0", "range": y_range}
-    layout["annotations"] = layout.get("annotations", []) + quad_annotations
+    layout["xaxis"] = {"title": {"text": data["x_axis"], "font": {"size": 16}},
+                        "tickfont": {"size": 14}, "showgrid": True, "gridcolor": "#f0f0f0", "range": x_range}
+    layout["yaxis"] = {"title": {"text": data["y_axis"], "font": {"size": 16}},
+                        "tickfont": {"size": 14}, "showgrid": True, "gridcolor": "#f0f0f0", "range": y_range}
+    layout["annotations"] = layout.get("annotations", []) + quad_annotations + value_annotations
+
+    # Size legend: show what bubble size represents
+    sizes = [item["size"] for item in items]
+    min_sz, max_sz = min(sizes), max(sizes)
+    layout["annotations"].append({
+        "x": 1.0, "y": -0.10, "xref": "paper", "yref": "paper",
+        "text": f"Bubble size = relative weight (range {min_sz}–{max_sz})",
+        "font": {"size": 14, "color": colors["muted"]}, "showarrow": False,
+        "xanchor": "right",
+    })
+
     fig.update_layout(**layout)
     if output_path:
         save_chart(fig, output_path)
