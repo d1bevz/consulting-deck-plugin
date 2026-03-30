@@ -125,42 +125,40 @@ def create_driver_tree(data, title=None, theme_path=None, output_path=None):
         marker_size = 56 if is_root else 36
         text_size = 22 if is_root else (17 if is_leaf else 19)
 
-        # Node marker
-        fig.add_trace(go.Scatter(
-            x=[x], y=[y], mode="markers",
-            marker={
-                "size": marker_size,
-                "color": node_color,
-                "line": {"width": 3 if is_root else 2, "color": "white"},
-            },
-            showlegend=False,
-            hovertext=f"<b>{nid}</b><br>Status: {status_label}",
-            hoverinfo="text",
-        ))
-
-        # Node label positioning:
-        # - Root and intermediate nodes: label to the right
-        # - Leaf nodes: label below the node to avoid horizontal overflow
-        label_text = f"<b>{nid}</b>" if is_root else nid
+        # Leaf nodes: marker + text below via mode="markers+text"
         if is_leaf:
-            fig.add_annotation(
-                x=x, y=y,
-                text=f"{label_text}<br><span style='color:{node_color}'>{status_label}</span>",
-                showarrow=False,
-                yanchor="top",
-                yshift=-(marker_size // 2 + 10),
-                xanchor="center",
-                font={"size": text_size, "color": colors["text"]},
-            )
+            display_text = f"{nid}<br>{status_label}"
+            fig.add_trace(go.Scatter(
+                x=[x], y=[y], mode="markers+text",
+                marker={
+                    "size": marker_size,
+                    "color": node_color,
+                    "line": {"width": 2, "color": "white"},
+                },
+                text=[display_text],
+                textposition="bottom center",
+                textfont={"size": text_size, "color": colors["text"]},
+                showlegend=False,
+                hovertext=f"<b>{nid}</b><br>Status: {status_label}",
+                hoverinfo="text",
+            ))
         else:
-            fig.add_annotation(
-                x=x, y=y,
-                text=f"{label_text}  <span style='color:{node_color}'>{status_label}</span>",
-                showarrow=False,
-                xanchor="left",
-                xshift=marker_size // 2 + 8,
-                font={"size": text_size, "color": colors["text"]},
-            )
+            # Non-leaf: marker + text to the right
+            display_text = f"<b>{nid}</b>  {status_label}" if is_root else f"{nid}  {status_label}"
+            fig.add_trace(go.Scatter(
+                x=[x], y=[y], mode="markers+text",
+                marker={
+                    "size": marker_size,
+                    "color": node_color,
+                    "line": {"width": 3 if is_root else 2, "color": "white"},
+                },
+                text=[display_text],
+                textposition="middle right",
+                textfont={"size": text_size, "color": colors["text"]},
+                showlegend=False,
+                hovertext=f"<b>{nid}</b><br>Status: {status_label}",
+                hoverinfo="text",
+            ))
 
     # Compute axis ranges with padding for labels
     all_x = [pos[n["id"]][0] for n in nodes_list]
