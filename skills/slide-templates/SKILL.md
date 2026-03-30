@@ -43,13 +43,15 @@ uv run python -m scripts.charts.<template> --data '<JSON>' --output output/draft
 Show the draft PNG. Confirm data accuracy. Adjust if needed.
 
 ### Step 5: Style with Nano Banana
-Send the draft to Nano Banana MCP with the template-specific prompt.
+Send a TEXT-ONLY prompt to Nano Banana MCP. DO NOT send the Plotly draft as reference_images — Nano Banana must create its own visual design from scratch. The Plotly draft is only for YOUR data verification.
 
 Use `mcp__nanobanana-mcp__gemini_generate_image` with:
-- `reference_images`: [path to plotly draft PNG]
 - `aspect_ratio`: "16:9"
 - `conversation_id`: "consulting-deck" (for style consistency across slides)
-- `prompt`: Build from base prompt + template-specific accents (see below)
+- `prompt`: Build from base prompt + ALL DATA described in text + template-specific accents
+- **NO reference_images** — Nano Banana designs freely, not copying Plotly's look
+
+The prompt must include ALL data points as text (exact numbers, labels, categories). Nano Banana cannot see the Plotly chart — it gets everything from the prompt.
 
 ### Step 6: Review Styled Slide
 Show the Nano Banana output. If user wants changes, use `mcp__nanobanana-mcp__gemini_edit_image`.
@@ -57,7 +59,7 @@ Show the Nano Banana output. If user wants changes, use `mcp__nanobanana-mcp__ge
 ## Base Prompt for Nano Banana
 
 ```
-Create a premium consulting slide based on the attached reference chart.
+Create a premium consulting slide from scratch. Design it as a professional presentation slide.
 
 LAYOUT:
 - Title at top-left: bold, large, max 2 lines
@@ -78,9 +80,10 @@ STYLE:
 - Clean, minimal, professional
 - Color palette from theme (load ${CLAUDE_PLUGIN_ROOT}/themes/default.yaml)
 
-DATA ACCURACY:
-- Preserve ALL data points from the reference chart exactly
+DATA:
+- All data is provided in the prompt as text — render it accurately
 - Do not invent or approximate numbers
+- [INSERT ALL DATA POINTS, LABELS, VALUES, AND CATEGORIES HERE]
 
 CALLOUT ANNOTATIONS:
 - Add callout boxes or arrows pointing to key data changes or insights
