@@ -53,7 +53,7 @@ def create_stacked_bar(
             marker_color=palette[i % len(palette)],
             text=[f"{v:.0f}%" for v in norm_values[i]],
             textposition="inside",
-            textfont={"size": 13, "color": "white"},
+            textfont={"size": 18, "color": "white", "family": "Inter Bold"},
         ))
 
     layout = get_plotly_layout(
@@ -62,9 +62,11 @@ def create_stacked_bar(
         source=data.get("source", ""),
     )
     layout["barmode"] = "stack"
-    layout["yaxis"] = {"title": "Share (%)", "range": [0, 100], "showgrid": True, "gridcolor": "#f0f0f0"}
-    layout["xaxis"] = {"title": ""}
-    layout["legend"] = {"orientation": "h", "y": -0.12, "x": 0.5, "xanchor": "center"}
+    layout["yaxis"] = {"title": "Share (%)", "range": [0, 100], "showgrid": True,
+                        "gridcolor": "#f0f0f0", "title_font": {"size": 16}, "tickfont": {"size": 14}}
+    layout["xaxis"] = {"title": "", "tickfont": {"size": 16}}
+    layout["legend"] = {"orientation": "h", "y": -0.12, "x": 0.5, "xanchor": "center",
+                         "font": {"size": 14}}
 
     fig.update_layout(**layout)
 

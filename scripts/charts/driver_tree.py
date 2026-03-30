@@ -72,11 +72,23 @@ def _compute_positions(tree, x_start=0, x_end=1, y=0, y_step=1.0, positions=None
     return positions
 
 
+def _collect_leaves(tree, leaves=None):
+    """Return set of leaf node IDs."""
+    if leaves is None:
+        leaves = set()
+    if not tree.get("children"):
+        leaves.add(tree["node"])
+    for child in tree.get("children", []):
+        _collect_leaves(child, leaves)
+    return leaves
+
+
 def create_driver_tree(data, title=None, theme_path=None, output_path=None):
     theme = load_theme(theme_path)
     colors = theme["colors"]
     nodes_list, edges = _flatten_tree(data["tree"])
     node_statuses = {n["id"]: n["status"] for n in nodes_list}
+    leaf_ids = _collect_leaves(data["tree"])
 
     # Compute positions with recursive algorithm for clean top-to-bottom layout
     pos = _compute_positions(data["tree"], x_start=0, x_end=10, y=0, y_step=1.5)
@@ -99,7 +111,7 @@ def create_driver_tree(data, title=None, theme_path=None, output_path=None):
     # Determine root node for special styling
     root_id = data["tree"]["node"]
 
-    # Draw nodes with status labels
+    # Draw nodes with status labels — sizes increased ~20%
     for node_info in nodes_list:
         nid = node_info["id"]
         status = node_info["status"]
@@ -109,9 +121,9 @@ def create_driver_tree(data, title=None, theme_path=None, output_path=None):
         status_label = STATUS_LABELS.get(status, "")
 
         is_root = nid == root_id
-        marker_size = 48 if is_root else 30
-        text_size = 16 if is_root else 14
-        font_weight = "bold" if is_root else "normal"
+        is_leaf = nid in leaf_ids
+        marker_size = 56 if is_root else 36
+        text_size = 22 if is_root else (17 if is_leaf else 19)
 
         # Node marker
         fig.add_trace(go.Scatter(
@@ -126,21 +138,45 @@ def create_driver_tree(data, title=None, theme_path=None, output_path=None):
             hoverinfo="text",
         ))
 
-        # Node label — positioned to the right of the node
+        # Node label positioning:
+        # - Root and intermediate nodes: label to the right
+        # - Leaf nodes: label below the node to avoid horizontal overflow
         label_text = f"<b>{nid}</b>" if is_root else nid
-        fig.add_annotation(
-            x=x, y=y,
-            text=f"{label_text}  <span style='color:{node_color}'>{status_label}</span>",
-            showarrow=False,
-            xanchor="left",
-            xshift=marker_size // 2 + 8,
-            font={"size": text_size, "color": colors["text"]},
-        )
+        if is_leaf:
+            fig.add_annotation(
+                x=x, y=y,
+                text=f"{label_text}<br><span style='color:{node_color}'>{status_label}</span>",
+                showarrow=False,
+                yanchor="top",
+                yshift=-(marker_size // 2 + 10),
+                xanchor="center",
+                font={"size": text_size, "color": colors["text"]},
+            )
+        else:
+            fig.add_annotation(
+                x=x, y=y,
+                text=f"{label_text}  <span style='color:{node_color}'>{status_label}</span>",
+                showarrow=False,
+                xanchor="left",
+                xshift=marker_size // 2 + 8,
+                font={"size": text_size, "color": colors["text"]},
+            )
+
+    # Compute axis ranges with padding for labels
+    all_x = [pos[n["id"]][0] for n in nodes_list]
+    all_y = [pos[n["id"]][1] for n in nodes_list]
+    x_pad = (max(all_x) - min(all_x)) * 0.12
+    y_range_span = max(all_y) - min(all_y) if max(all_y) != min(all_y) else 1
+    # Extra space below for leaf labels, extra space above for root label
+    y_pad_bottom = y_range_span * 0.25
+    y_pad_top = y_range_span * 0.15
 
     layout = get_plotly_layout(theme, title=title or data.get("title", ""), source=data.get("source", ""))
-    layout["xaxis"] = {"visible": False}
-    layout["yaxis"] = {"visible": False}
+    layout["xaxis"] = {"visible": False, "range": [min(all_x) - x_pad, max(all_x) + x_pad]}
+    layout["yaxis"] = {"visible": False, "range": [min(all_y) - y_pad_bottom, max(all_y) + y_pad_top]}
     layout["showlegend"] = False
+    # Extra bottom margin to accommodate leaf labels below nodes
+    layout["margin"] = {"l": 80, "r": 80, "t": 100, "b": 140}
     fig.update_layout(**layout)
 
     if output_path:

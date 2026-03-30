@@ -20,92 +20,97 @@ DEMO_DATA = {
     "source": "Company records; internal analysis",
 }
 
+
 def create_timeline_bars(data, title=None, theme_path=None, output_path=None):
     theme = load_theme(theme_path)
     colors = theme["colors"]
     periods = data["periods"]
+
+    n = len(periods)
+    x_indices = list(range(n))
     years = [p["year"] for p in periods]
     values = [p["value"] for p in periods]
-    labels = [p["label"] for p in periods]
-    bar_colors = [colors.get(p.get("color", "primary"), p.get("color", colors["primary"])) for p in periods]
+    bar_colors = [
+        colors.get(p.get("color", "primary"), colors["primary"])
+        for p in periods
+    ]
     max_val = max(values)
 
-    # Determine label placement: inside bar if bar is tall enough, otherwise below x-axis
-    label_threshold = max_val * 0.15  # bars shorter than 15% of max get label below
-
+    # --- Main bar chart (integer x positions, categorical tick labels) ---
     fig = go.Figure()
     fig.add_trace(go.Bar(
-        x=years,
+        x=x_indices,
         y=values,
         marker_color=bar_colors,
-        text=[str(v) for v in values],
+        width=[0.7] * n,
+        # Value numbers displayed ABOVE each bar
+        text=[f"<b>{v}</b>" for v in values],
         textposition="outside",
-        textfont={"size": 16, "color": colors["text"], "family": "Inter Bold"},
+        textfont=dict(size=20, color=colors["text"], family="Inter Bold"),
     ))
 
+    # --- Annotations ---
     annotations_list = []
 
     for i, p in enumerate(periods):
         v = p["value"]
         label = p["label"]
 
-        # Use index for x position (category axis maps strings to 0-based indices)
-        # Place label inside bar if tall enough, otherwise below x-axis
-        if v >= label_threshold:
-            annotations_list.append({
-                "x": i, "y": v / 2,
-                "text": f"<b>{label}</b>",
-                "showarrow": False,
-                "font": {"size": 14, "color": "#ffffff"},
-                "xanchor": "center", "yanchor": "middle",
-            })
-        else:
-            annotations_list.append({
-                "x": i, "y": -max_val * 0.06,
-                "text": f"<b>{label}</b>",
-                "showarrow": False,
-                "font": {"size": 13, "color": colors["text"]},
-                "xanchor": "center", "yanchor": "top",
-            })
+        # Label INSIDE the bar — large, white, bold
+        annotations_list.append(dict(
+            x=i,
+            y=v / 2,
+            text=f"<b>{label}</b>",
+            showarrow=False,
+            font=dict(size=18, color="#ffffff", family="Inter Bold"),
+            xanchor="center",
+            yanchor="middle",
+        ))
 
-        # Event annotations above bars (with offset from value label)
+        # Event annotation BELOW the x-axis label (small callout)
         if p.get("annotation"):
-            annotations_list.append({
-                "x": i, "y": v + max_val * 0.14,
-                "text": p["annotation"],
-                "showarrow": True,
-                "arrowhead": 0,
-                "arrowwidth": 1,
-                "arrowcolor": colors["muted"],
-                "ax": 0, "ay": -20,
-                "font": {"size": 12, "color": colors["muted"]},
-                "xanchor": "center",
-            })
+            annotations_list.append(dict(
+                x=i,
+                y=-max_val * 0.09,
+                text=p["annotation"],
+                showarrow=False,
+                font=dict(size=13, color=colors["muted"], family="Inter Regular"),
+                xanchor="center",
+                yanchor="top",
+            ))
 
-    layout = get_plotly_layout(theme, title=title or data.get("title", ""), source=data.get("source", ""))
-    layout["yaxis"] = {
-        "title": {"text": "Intensity", "font": {"size": 14}},
-        "showgrid": True,
-        "gridcolor": "#f0f0f0",
-        "range": [-(max_val * 0.1), max_val * 1.45],
-        "tickfont": {"size": 13},
-    }
-    layout["xaxis"] = {
-        "title": "",
-        "tickfont": {"size": 14},
-        "type": "category",
-        "categoryorder": "array",
-        "categoryarray": years,
-    }
+    # --- Layout ---
+    layout = get_plotly_layout(
+        theme,
+        title=title or data.get("title", ""),
+        source=data.get("source", ""),
+    )
+    layout["xaxis"] = dict(
+        title="",
+        tickmode="array",
+        tickvals=x_indices,
+        ticktext=years,
+        tickfont=dict(size=16, color=colors["text"]),
+        range=[-0.6, n - 0.4],
+    )
+    layout["yaxis"] = dict(
+        title=dict(text="Intensity", font=dict(size=16)),
+        showgrid=True,
+        gridcolor="#f0f0f0",
+        range=[-(max_val * 0.15), max_val * 1.20],
+        tickfont=dict(size=14),
+    )
     layout["showlegend"] = False
     layout["bargap"] = 0.3
-    layout["margin"] = {"l": 80, "r": 60, "t": 120, "b": 100}
+    layout["margin"] = dict(l=80, r=60, t=120, b=120)
     layout["annotations"] = layout.get("annotations", []) + annotations_list
+
     fig.update_layout(**layout)
 
     if output_path:
         save_chart(fig, output_path)
     return fig
+
 
 if __name__ == "__main__":
     data, output, theme_path = parse_cli_args()

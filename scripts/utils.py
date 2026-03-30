@@ -28,7 +28,7 @@ def get_plotly_layout(theme: dict, title: str, source: str = "") -> dict:
     return {
         "title": {
             "text": title,
-            "font": {"size": 28, "color": colors["text"]},
+            "font": {"size": 32, "color": colors["text"], "family": "Inter Bold"},
             "x": 0.02,
             "xanchor": "left",
             "y": 0.95,
@@ -38,7 +38,7 @@ def get_plotly_layout(theme: dict, title: str, source: str = "") -> dict:
         "height": style["slide_height"],
         "plot_bgcolor": colors["background"],
         "paper_bgcolor": colors["background"],
-        "font": {"color": colors["text"], "size": 14},
+        "font": {"color": colors["text"], "size": 16},
         "margin": {"l": 80, "r": 60, "t": 100, "b": 80},
         "annotations": [
             {
@@ -48,7 +48,7 @@ def get_plotly_layout(theme: dict, title: str, source: str = "") -> dict:
                 "x": 0.02,
                 "y": -0.06,
                 "showarrow": False,
-                "font": {"size": 10, "color": colors["muted"]},
+                "font": {"size": 12, "color": colors["muted"]},
             }
         ],
     }
