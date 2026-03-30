@@ -5,9 +5,10 @@ from scripts.charts.timeline_bars import create_timeline_bars, DEMO_DATA
 def test_demo_data_has_required_keys():
     assert "periods" in DEMO_DATA
     for p in DEMO_DATA["periods"]:
-        assert "year" in p
-        assert "label" in p
+        assert "start" in p
+        assert "end" in p
         assert "value" in p
+        assert p["end"] > p["start"]
 
 def test_create_timeline_bars_returns_figure():
     fig = create_timeline_bars(DEMO_DATA, title="Test")
