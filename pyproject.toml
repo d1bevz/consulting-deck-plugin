@@ -1,0 +1,18 @@
+[project]
+name = "consulting-deck-plugin"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "plotly>=5.18",
+    "kaleido>=0.2",
+    "reportlab>=4.0",
+    "python-pptx>=0.6",
+    "pyyaml>=6.0",
+    "networkx>=3.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

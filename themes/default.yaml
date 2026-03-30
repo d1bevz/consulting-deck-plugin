@@ -1,0 +1,36 @@
+name: "Premium Startup"
+colors:
+  primary: "#1a1a2e"
+  accent: "#e94560"
+  secondary: "#0f3460"
+  success: "#16c79a"
+  warning: "#f5a623"
+  danger: "#e94560"
+  background: "#ffffff"
+  text: "#16213e"
+  muted: "#8b9dc3"
+  chart_palette:
+    - "#0f3460"
+    - "#e94560"
+    - "#16c79a"
+    - "#f5a623"
+    - "#533483"
+    - "#3282b8"
+    - "#e2979c"
+    - "#a7c5eb"
+typography:
+  title: "Inter Bold"
+  subtitle: "Inter SemiBold"
+  body: "Inter Regular"
+  caption: "Inter Light"
+  title_size: 24
+  body_size: 14
+  caption_size: 9
+style:
+  aesthetic: "premium-startup"
+  chart_line_width: 2
+  border_radius: 0
+  shadow: false
+  gradient: false
+  slide_width: 1920
+  slide_height: 1080
