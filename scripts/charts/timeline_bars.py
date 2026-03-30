@@ -33,9 +33,6 @@ DEMO_DATA = {
     "y_label": "Growth Rate (%)",
 }
 
-# Backward compatibility alias
-create_timeline_bars_compat = None  # set after function def
-
 
 def create_mekko(data, title=None, theme_path=None, output_path=None):
     """Create a Mekko chart — variable-width bars encoding two dimensions."""

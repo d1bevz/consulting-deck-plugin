@@ -5,7 +5,7 @@ description: "9 consulting slide templates with Plotly drafts and Nano Banana st
 
 # Slide Templates
 
-9 consulting-style slide templates. Each produces a Plotly draft for data accuracy, then sends to Nano Banana MCP for premium styling.
+10 consulting-style slide templates. Each produces a Plotly draft for data accuracy, then sends to Nano Banana MCP for premium styling.
 
 ## Available Templates
 
@@ -20,6 +20,7 @@ description: "9 consulting slide templates with Plotly drafts and Nano Banana st
 | 7 | Bubble/2x2 | `bubble_matrix.py` | Strategic positioning (2 axes + size) |
 | 8 | Quotes | `stakeholder_quotes.py` | Structured pro/contra feedback |
 | 9 | Agenda | `agenda.py` | Presentation navigation/TOC |
+| 10 | Waterfall Flow | `waterfall_flow.py` | Cumulative +/- contributions to total |
 
 For help choosing: read `${CLAUDE_PLUGIN_ROOT}/references/chart-selection.md`
 
@@ -199,6 +200,17 @@ ACCENTS:
 - Thin separators between sections
 - Accent bar/stripe on the left side of each section
 - Optionally highlight current section in accent color
+```
+
+### Waterfall Flow
+```
+ACCENTS:
+- Green bars for positive contributions, red for negative, dark blue for totals
+- Value labels above each bar (bold, 18px+), with +/- prefix for relative items
+- Dotted connector lines between bars showing the cumulative flow
+- Callout on the largest positive and largest negative factor
+- Clear separation between starting value, contributions, and ending total
+- Y-axis shows the value scale, X-axis shows factor names (angled if needed)
 ```
 
 ## Theme

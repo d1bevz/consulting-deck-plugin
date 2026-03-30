@@ -35,3 +35,8 @@ def test_assemble_pptx(sample_pngs, tmp_path):
 def test_assemble_pdf_empty_raises():
     with pytest.raises(ValueError):
         assemble_pdf([], "/tmp/empty.pdf")
+
+
+def test_assemble_pptx_empty_raises():
+    with pytest.raises(ValueError):
+        assemble_pptx([], "/tmp/empty.pptx")

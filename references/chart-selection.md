@@ -13,6 +13,7 @@
 | Position on two parameters + third dim | Bubble / 2x2 Matrix | `bubble_matrix` |
 | Present structured feedback pro/contra | Stakeholder Quotes | `stakeholder_quotes` |
 | Show presentation structure | Agenda | `agenda` |
+| Show cumulative +/- contributions | Waterfall Flow | `waterfall_flow` |
 
 ## When to Use Each
 
@@ -67,3 +68,10 @@
 ### Agenda
 - Presentation opening
 - Section transitions (with highlight_index)
+
+### Waterfall Flow
+- Revenue bridge (starting → contributions → ending)
+- P&L waterfall (revenue → costs → profit)
+- Budget variance analysis
+- Factor influence analysis (what drove the change)
+- Before/after decomposition

@@ -1,6 +1,6 @@
 {
   "name": "consulting-deck",
-  "description": "Premium consulting-style presentation builder with 9 slide templates, SCR framework, and Nano Banana MCP integration",
+  "description": "Premium consulting-style presentation builder with 10 slide templates, SCR framework, and Nano Banana MCP integration",
   "version": "0.1.0",
   "skills": "./skills/"
 }

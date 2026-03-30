@@ -4,13 +4,13 @@
     "name": "d1bevz"
   },
   "metadata": {
-    "description": "Consulting presentation builder: 9 slide templates, SCR/Minto framework, Plotly drafts, Nano Banana styling",
+    "description": "Consulting presentation builder: 10 slide templates, SCR/Minto framework, Plotly drafts, Nano Banana styling",
     "version": "0.1.0"
   },
   "plugins": [
     {
       "name": "consulting-deck",
-      "description": "Build premium consulting presentations with structured discovery, 9 chart templates, and AI styling",
+      "description": "Build premium consulting presentations with structured discovery, 10 chart templates, and AI styling",
       "source": "./",
       "strict": true,
       "skills": [
