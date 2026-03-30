@@ -33,6 +33,8 @@ def create_timeline_bars(data, title=None, theme_path=None, output_path=None):
     colors = theme["colors"]
     periods = data["periods"]
 
+    n = len(periods)
+    indices = list(range(n))  # Use integers to avoid Plotly treating "2019" as number
     years = [p["year"] for p in periods]
     values = [p["value"] for p in periods]
     labels = [p["label"] for p in periods]
@@ -45,9 +47,9 @@ def create_timeline_bars(data, title=None, theme_path=None, output_path=None):
 
     fig = go.Figure()
 
-    # Main bars — use year strings as categorical x-axis
+    # Main bars at integer positions, year labels on x-axis ticks
     fig.add_trace(go.Bar(
-        x=years,
+        x=indices,
         y=values,
         marker_color=bar_colors,
         marker_line={"width": 0},
@@ -62,7 +64,7 @@ def create_timeline_bars(data, title=None, theme_path=None, output_path=None):
 
         # Label name above the bar (the main label like "Idea", "MVP", etc.)
         annotations_list.append({
-            "x": years[i],
+            "x": i,
             "y": v,
             "text": f"<b>{labels[i]}</b>",
             "showarrow": False,
@@ -75,7 +77,7 @@ def create_timeline_bars(data, title=None, theme_path=None, output_path=None):
         # Annotation (event details) above the label
         if p.get("annotation"):
             annotations_list.append({
-                "x": years[i],
+                "x": i,
                 "y": v,
                 "text": p["annotation"],
                 "showarrow": False,
@@ -102,12 +104,15 @@ def create_timeline_bars(data, title=None, theme_path=None, output_path=None):
     )
     layout["xaxis"] = {
         "title": "",
-        "type": "category",
+        "tickmode": "array",
+        "tickvals": indices,
+        "ticktext": years,
         "tickfont": {"size": 18, "color": colors["text"], "family": "Inter Bold"},
         "showgrid": False,
         "showline": True,
         "linecolor": colors["muted"],
         "linewidth": 2,
+        "range": [-0.5, n - 0.5],
     }
     layout["yaxis"] = {
         "title": {"text": "Intensity", "font": {"size": 16}},
