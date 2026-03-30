@@ -1,0 +1,172 @@
+---
+name: slide-templates
+description: "9 consulting slide templates with Plotly drafts and Nano Banana styling. Use when: user asks for a specific chart type (spider chart, stacked bar, 2x2 matrix, driver tree, waterfall, harvey balls, bubble chart, stakeholder quotes, agenda), wants to create a single consulting-style slide, or says 'slide template', 'chart', 'make a slide', 'consulting slide'."
+---
+
+# Slide Templates
+
+9 consulting-style slide templates. Each produces a Plotly draft for data accuracy, then sends to Nano Banana MCP for premium styling.
+
+## Available Templates
+
+| # | Template | Script | When to Use |
+|---|----------|--------|-------------|
+| 1 | Stacked Bar | `stacked_bar.py` | Compare composition across objects |
+| 2 | Timeline Bars | `timeline_bars.py` | Show metric evolution over time |
+| 3 | Waterfall | `waterfall.py` | Rank/benchmark against alternatives |
+| 4 | Driver Tree | `driver_tree.py` | Decompose a KPI into components |
+| 5 | Spider/Radar | `spider_radar.py` | Compare profiles across dimensions |
+| 6 | Harvey Balls | `harvey_balls.py` | Qualitative multi-criteria scoring |
+| 7 | Bubble/2x2 | `bubble_matrix.py` | Strategic positioning (2 axes + size) |
+| 8 | Quotes | `stakeholder_quotes.py` | Structured pro/contra feedback |
+| 9 | Agenda | `agenda.py` | Presentation navigation/TOC |
+
+For help choosing: read `${CLAUDE_PLUGIN_ROOT}/references/chart-selection.md`
+
+## Workflow for Each Slide
+
+### Step 1: Clarify Data
+Ask the user what data goes into the chart. Each template has a specific data schema.
+If the user is unsure, show them the DEMO_DATA from the script as an example.
+
+### Step 2: Prepare Data Dict
+Structure the user's data into the template's expected format (Python dict / JSON).
+
+### Step 3: Generate Plotly Draft
+```bash
+cd ${CLAUDE_PLUGIN_ROOT}
+uv run python -m scripts.charts.<template> --data '<JSON>' --output output/draft_<name>.png
+```
+
+### Step 4: Review Draft with User
+Show the draft PNG. Confirm data accuracy. Adjust if needed.
+
+### Step 5: Style with Nano Banana
+Send the draft to Nano Banana MCP with the template-specific prompt.
+
+Use `mcp__nanobanana-mcp__gemini_generate_image` with:
+- `reference_images`: [path to plotly draft PNG]
+- `aspect_ratio`: "16:9"
+- `conversation_id`: "consulting-deck" (for style consistency across slides)
+- `prompt`: Build from base prompt + template-specific accents (see below)
+
+### Step 6: Review Styled Slide
+Show the Nano Banana output. If user wants changes, use `mcp__nanobanana-mcp__gemini_edit_image`.
+
+## Base Prompt for Nano Banana
+
+```
+Create a premium consulting slide based on the attached reference chart.
+
+LAYOUT:
+- Title at top-left: bold, large, max 2 lines
+- Title IS a conclusion/insight, not a description
+- Chart/content centered, ~60% of slide area
+- Source footnote bottom-left, small text
+
+VISUAL PRINCIPLES:
+- Focus: highlight the key takeaway visually (color, size, border)
+- Grouping: related elements close together
+- Contrast: primary larger/brighter, secondary smaller/muted
+- Whitespace: generous — air = premium
+- No decorative elements, no gradients, no shadows
+- Flat design with depth through spacing
+
+STYLE:
+- Premium startup aesthetic — Series B pitch deck quality
+- Clean, minimal, professional
+- Color palette from theme (load ${CLAUDE_PLUGIN_ROOT}/themes/default.yaml)
+
+DATA ACCURACY:
+- Preserve ALL data points from the reference chart exactly
+- Do not invent or approximate numbers
+
+TITLE: "[insert approved headline]"
+SOURCE: "[insert data source]"
+```
+
+## Template-Specific Prompt Additions
+
+### Stacked Bar
+```
+ACCENTS:
+- Thin connecting lines between corresponding segments across bars
+- Percentage labels inside each segment (white text)
+- Highlight the dominant segment with slightly bolder color
+```
+
+### Timeline Bars
+```
+ACCENTS:
+- Event annotations above/below bars with small text
+- Color code bars by type (growth=green, setback=red, neutral=gray)
+- Optional trend arrow showing overall direction
+```
+
+### Waterfall / Ranked Bars
+```
+ACCENTS:
+- Highlighted bar(s) in accent color, rest in muted gray
+- Value labels on top of each bar
+- Descending sort, clean spacing
+```
+
+### Driver Tree
+```
+ACCENTS:
+- Nodes colored by status: green=met, red=unmet, yellow=partial
+- Clear hierarchical layout, left-to-right or top-to-bottom
+- Thin connecting lines between parent and children
+- Root node larger and bolder
+```
+
+### Spider / Radar
+```
+ACCENTS:
+- Semi-transparent fill under each profile line
+- Circle or highlight the 2 biggest gaps between profiles
+- Annotate gap areas with brief text
+- Legend positioned cleanly (top-right or bottom-center)
+```
+
+### Harvey Ball Matrix
+```
+ACCENTS:
+- Clean grid layout with even spacing
+- Circles with proportional fill (0%=empty, 25%, 50%, 75%, 100%=full)
+- Row headers bold, column headers at top
+- Optionally highlight the "winner" row
+```
+
+### Bubble / 2x2 Matrix
+```
+ACCENTS:
+- Dashed lines dividing quadrants
+- Quadrant labels in corners (e.g., "Stars", "Cash Cows")
+- Key bubble larger and in accent color
+- Size legend if bubble sizes differ significantly
+- "Top box" zone optionally highlighted with subtle background
+```
+
+### Stakeholder Quotes
+```
+ACCENTS:
+- Two-column layout: positive (left) vs concerns (right)
+- Styled quotation marks
+- Attribution in smaller muted text below each quote
+- Summary box at bottom with key takeaway
+- Vertical divider between columns
+```
+
+### Agenda
+```
+ACCENTS:
+- Section numbers in large bold type
+- Section titles prominent, subsections in muted smaller text
+- Thin separators between sections
+- Optionally highlight current section in accent color
+```
+
+## Theme
+Load colors and typography from: `${CLAUDE_PLUGIN_ROOT}/themes/default.yaml`
+Users can customize by editing or replacing this file.
