@@ -51,21 +51,35 @@ def create_timeline_bars(data, title=None, theme_path=None, output_path=None):
 
     # --- Annotations ---
     annotations_list = []
+    # Bars shorter than 20% of max are too small for an inside label
+    label_min_height = max_val * 0.20
 
     for i, p in enumerate(periods):
         v = p["value"]
         label = p["label"]
 
-        # Label INSIDE the bar — large, white, bold
-        annotations_list.append(dict(
-            x=i,
-            y=v / 2,
-            text=f"<b>{label}</b>",
-            showarrow=False,
-            font=dict(size=18, color="#ffffff", family="Inter Bold"),
-            xanchor="center",
-            yanchor="middle",
-        ))
+        if v >= label_min_height:
+            # Label INSIDE the bar — large, white, bold
+            annotations_list.append(dict(
+                x=i,
+                y=v / 2,
+                text=f"<b>{label}</b>",
+                showarrow=False,
+                font=dict(size=18, color="#ffffff", family="Inter Bold"),
+                xanchor="center",
+                yanchor="middle",
+            ))
+        else:
+            # Bar too short — place label just below the value number
+            annotations_list.append(dict(
+                x=i,
+                y=v + max_val * 0.12,
+                text=f"<b>{label}</b>",
+                showarrow=False,
+                font=dict(size=16, color=bar_colors[i], family="Inter Bold"),
+                xanchor="center",
+                yanchor="bottom",
+            ))
 
         # Event annotation BELOW the x-axis label (small callout)
         if p.get("annotation"):
@@ -74,7 +88,7 @@ def create_timeline_bars(data, title=None, theme_path=None, output_path=None):
                 y=-max_val * 0.09,
                 text=p["annotation"],
                 showarrow=False,
-                font=dict(size=13, color=colors["muted"], family="Inter Regular"),
+                font=dict(size=14, color=colors["muted"], family="Inter Regular"),
                 xanchor="center",
                 yanchor="top",
             ))
@@ -97,7 +111,7 @@ def create_timeline_bars(data, title=None, theme_path=None, output_path=None):
         title=dict(text="Intensity", font=dict(size=16)),
         showgrid=True,
         gridcolor="#f0f0f0",
-        range=[-(max_val * 0.15), max_val * 1.20],
+        range=[-(max_val * 0.15), max_val * 1.30],
         tickfont=dict(size=14),
     )
     layout["showlegend"] = False
