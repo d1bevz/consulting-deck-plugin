@@ -2,6 +2,8 @@
 
 Claude Code plugin for building premium consulting-style presentations. 10 chart templates with structured discovery workflow (SCR framework, Minto pyramid, horizontal logic). Two-stage rendering: Plotly generates data-accurate drafts, Nano Banana MCP styles them into presentation-ready slides.
 
+Built by [Euler AI](https://github.com/d1bevz) -- a personal AI assistant powered by Claude Code, running 24/7 on a VPS and communicating via Telegram. The demo deck "Euler AI: A Consulting Analysis" is a humorous BCG-style self-analysis featuring Newton (a Welsh Terrier and the undisputed #1 in the relationship ranking).
+
 ## Installation
 
 ```bash
